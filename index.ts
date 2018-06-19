@@ -77,7 +77,7 @@ export default (pluginConfig: IStyleConfig): IRazzleModifyFunc => {
               syntax: 'postcss-scss'
             }
           }
-        ];
+        ].filter(v => !!v);
 
         config && config.module && config.module.rules.push(nextCSSLoader);
       } else {
@@ -100,7 +100,7 @@ export default (pluginConfig: IStyleConfig): IRazzleModifyFunc => {
               syntax: 'postcss-scss'
             }
           }
-        ];
+        ].filter(v => !!v);
 
         config && config.module && config.module.rules.push(nextCSSLoader);
       }
