@@ -1,6 +1,6 @@
 {
   "name": "razzle-plugin-postcss",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "Razzle Plugin to support PostCSS (with support for SCSS syntax)",
   "main": "dist/index.js",
   "repository": "git@github.com:rhodee/razzle-plugin-postcss.git",
