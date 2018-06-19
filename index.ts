@@ -1,25 +1,25 @@
-import MiniCssExtractPlugin from 'mini-css-extract-plugin'
-import * as postcss from 'postcss'
-import * as wp from 'webpack'
+import * as MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import * as postcss from 'postcss';
+import * as wp from 'webpack';
 
-const postcssPlugins: any[] = []
+const postcssPlugins: any[] = [];
 /*tslint:disable-next-line:no-var-requires no-submodule-imports*/
-const makeLoaderFinder = require('razzle-dev-utils/makeLoaderFinder')
-const cssFinder = makeLoaderFinder('css-loader')
+const makeLoaderFinder = require('razzle-dev-utils/makeLoaderFinder');
+const cssFinder = makeLoaderFinder('css-loader');
 
 interface IModifyConfigTargetDevOptions {
-  target: 'node' | 'web'
-  dev: boolean
+  target: 'node' | 'web';
+  dev: boolean;
 }
 
 export interface IStyleConfig {
-  postcssPlugins?: postcss.AcceptedPlugin[]
-  cssFilename?: string
-  cssChunkFilename?: string
+  cssChunkFilename?: string;
+  cssFilename?: string;
+  postcssPlugins?: postcss.AcceptedPlugin[];
 }
 
 interface IRazzleUserOptions {
-  [name: string]: any
+  [name: string]: any;
 }
 
 type IRazzleModifyFunc = (
@@ -27,7 +27,7 @@ type IRazzleModifyFunc = (
   { target, dev }: IModifyConfigTargetDevOptions,
   webpack: wp.Compiler,
   userOptions: IRazzleUserOptions
-) => wp.Configuration
+) => wp.Configuration;
 
 /**
  * @param {IModifyConfigOption} pluginConfig - configuration objects for postcss and scss loaders.
@@ -42,17 +42,21 @@ export default (pluginConfig: IStyleConfig): IRazzleModifyFunc => {
     webpack: wp.Compiler,
     userOptions = {}
   ) => {
-    const cssPlugin = new MiniCssExtractPlugin({ filename: pluginConfig.cssFilename || '', chunkFilename: pluginConfig.cssChunkFilename })
-    const config = { ...baseConfig }
+    const cssPlugin = new MiniCssExtractPlugin({
+      chunkFilename: pluginConfig.cssChunkFilename,
+      filename: pluginConfig.cssFilename || ''
+    });
+    const config = { ...baseConfig };
 
-    const currentCSSLoader = config.module && config.module.rules.find(cssFinder)
+    const currentCSSLoader =
+      config.module && config.module.rules.find(cssFinder);
 
     if (currentCSSLoader) {
       // remove current CSS Loader
       (config.module as wp.Module).rules = (config.module as wp.Module).rules.filter(
         rule => !cssFinder(rule)
-      )
-      const nextCSSLoader: wp.Rule = { ...currentCSSLoader }
+      );
+      const nextCSSLoader: wp.Rule = { ...currentCSSLoader };
 
       if (dev) {
         nextCSSLoader.use = [
@@ -68,16 +72,16 @@ export default (pluginConfig: IStyleConfig): IRazzleModifyFunc => {
             loader: require.resolve('postcss-loader'),
             options: {
               ident: 'postcss', // https://webpack.js.org/guides/migrating/#complex-options
-              plugins: () => postcssPlugins.concat(pluginConfig.postcssPlugins || []),
+              plugins: () =>
+                postcssPlugins.concat(pluginConfig.postcssPlugins || []),
               syntax: 'postcss-scss'
             }
           }
-        ]
+        ];
 
-        config && config.module && config.module.rules.push(nextCSSLoader)
+        config && config.module && config.module.rules.push(nextCSSLoader);
       } else {
-
-        config && config.plugins && config.plugins.push(cssPlugin)
+        config && config.plugins && config.plugins.push(cssPlugin);
         nextCSSLoader.use = [
           MiniCssExtractPlugin.loader,
           {
@@ -91,16 +95,17 @@ export default (pluginConfig: IStyleConfig): IRazzleModifyFunc => {
             loader: require.resolve('postcss-loader'),
             options: {
               ident: 'postcss', // https://webpack.js.org/guides/migrating/#complex-options
-              plugins: () => postcssPlugins.concat(pluginConfig.postcssPlugins || []),
+              plugins: () =>
+                postcssPlugins.concat(pluginConfig.postcssPlugins || []),
               syntax: 'postcss-scss'
             }
           }
-        ]
+        ];
 
-        config && config.module && config.module.rules.push(nextCSSLoader)
+        config && config.module && config.module.rules.push(nextCSSLoader);
       }
     }
 
-    return config
-  }
-}
+    return config;
+  };
+};
