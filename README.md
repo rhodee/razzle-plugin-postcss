@@ -12,7 +12,7 @@ Example options for each plugin can be found inside of [testdata]('testdata'). O
 ```javascript
   // razzle.config.js
 
-  const modifyBuilder = require('razzle-plugin-postcss')
+  const modifyBuilder = require('razzle-plugin-postcss').default
   const cssConfig = {
   postcssPlugins: [
     require('stylelint')({
@@ -33,7 +33,7 @@ Example options for each plugin can be found inside of [testdata]('testdata'). O
   const modify = modifyBuilder({ cssConfig })
 
   module.exports = {
-    plugins: [modify]
+    plugins: [ { func: modify }]
   }
 ```
 
