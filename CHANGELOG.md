@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.2.4"></a>
+# [2.3.0](https://github.com/rhodee/razzle-plugin-postcss/compare/v2.2.3...v2.3.0) (2018-06-20)
+
+
+### Bug Fixes
+
+* **loader:** Loading paradigm ([ee174cb](https://github.com/rhodee/razzle-plugin-postcss/commit/ee174cb))
+
+
+### Features
+
+* **example:** Add a working example. ([48bfeda](https://github.com/rhodee/razzle-plugin-postcss/commit/48bfeda))
+
+
+
 <a name="2.2.3"></a>
 ## [2.2.3](https://github.com/rhodee/razzle-plugin-postcss/compare/v2.2.2...v2.2.3) (2018-06-19)
 
