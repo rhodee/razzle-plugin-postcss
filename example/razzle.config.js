@@ -13,9 +13,7 @@ const cssConfig = {
         'not ie < 9' // React doesn't support IE8 anyway
       ]
     })
-  ],
-  filename: '[name].css',
-  chunkFilename: '[contenthash:8].css'
+  ]
 }
 
 const modify = modifyBuilder({ cssConfig })

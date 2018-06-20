@@ -1,8 +1,6 @@
-import * as MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import * as postcss from 'postcss';
 import * as wp from 'webpack';
 
-const postcssPlugins: any[] = [];
 /*tslint:disable-next-line:no-var-requires no-submodule-imports*/
 const makeLoaderFinder = require('razzle-dev-utils/makeLoaderFinder');
 const cssFinder = makeLoaderFinder('css-loader');
@@ -42,67 +40,52 @@ export default (pluginConfig: IStyleConfig): IRazzleModifyFunc => {
     webpack: wp.Compiler,
     userOptions = {}
   ) => {
-    const cssPlugin = new MiniCssExtractPlugin({
-      chunkFilename: pluginConfig.cssChunkFilename,
-      filename: pluginConfig.cssFilename || ''
-    });
     const config = { ...baseConfig };
-
     const currentCSSLoader =
-      config.module && config.module.rules.find(cssFinder);
+      config.module && config.module.rules.find<wp.RuleSetRule>(cssFinder);
 
     if (currentCSSLoader) {
-      // remove current CSS Loader
-      (config.module as wp.Module).rules = (config.module as wp.Module).rules.filter(
-        rule => !cssFinder(rule)
+      const loaderIdx = (config.module as wp.Module).rules.indexOf(
+        currentCSSLoader
       );
-      const nextCSSLoader: wp.Rule = { ...currentCSSLoader };
+      const ruleArray =
+        currentCSSLoader && currentCSSLoader.use && currentCSSLoader.use;
+      let nextCSSLoader: wp.RuleSetRule = { ...currentCSSLoader };
 
-      if (dev) {
-        nextCSSLoader.use = [
-          target === 'node' ? '' : require.resolve('style-loader'),
-          {
-            loader: require.resolve('css-loader'),
-            options: {
-              modules: false,
-              sourceMap: true
-            }
-          },
-          {
-            loader: require.resolve('postcss-loader'),
-            options: {
-              ident: 'postcss', // https://webpack.js.org/guides/migrating/#complex-options
-              plugins: () =>
-                postcssPlugins.concat(pluginConfig.postcssPlugins || []),
-              syntax: 'postcss-scss'
+      if (Array.isArray(ruleArray)) {
+        const loaderContainer: any = ruleArray.find(ruleItem => {
+          if (ruleItem && typeof ruleItem === 'object') {
+            if (ruleItem.loader) {
+              if (ruleItem.loader.match('postcss-loader')) return true;
             }
           }
-        ].filter(v => !!v);
+          return false;
+        });
 
-        config && config.module && config.module.rules.push(nextCSSLoader);
-      } else {
-        config && config.plugins && config.plugins.push(cssPlugin);
-        nextCSSLoader.use = [
-          MiniCssExtractPlugin.loader,
-          {
-            loader: require.resolve('css-loader'),
-            options: {
-              importLoaders: 1,
-              minimize: true
+        if (loaderContainer) {
+          const ruleIdx = ruleArray.indexOf(loaderContainer);
+          loaderContainer.options = {
+            ...loaderContainer.options,
+            plugins: pluginConfig.postcssPlugins,
+            syntax: 'postcss-scss'
+          };
+
+          if (nextCSSLoader.use) {
+            if (Array.isArray(nextCSSLoader.use)) {
+              nextCSSLoader.use[ruleIdx] = loaderContainer;
             }
-          },
-          {
-            loader: require.resolve('postcss-loader'),
-            options: {
-              ident: 'postcss', // https://webpack.js.org/guides/migrating/#complex-options
-              plugins: () =>
-                postcssPlugins.concat(pluginConfig.postcssPlugins || []),
-              syntax: 'postcss-scss'
-            }
+          } else {
+            nextCSSLoader = {
+              use: [loaderContainer]
+            };
           }
-        ].filter(v => !!v);
 
-        config && config.module && config.module.rules.push(nextCSSLoader);
+          if (config.module) {
+            config.module.rules[loaderIdx] = nextCSSLoader;
+          }
+        }
+
+        return config;
       }
     }
 

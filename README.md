@@ -1,9 +1,11 @@
 # razzle-plugin-postcss
 
 [![CircleCI](https://circleci.com/gh/rhodee/razzle-plugin-postcss/tree/master.svg?style=shield)](https://circleci.com/gh/rhodee/razzle-plugin-postcss/tree/master)
-![Razzle-status](https://david-dm.org/rhodee/razzle-plugin-postcss.svg?path=packages/razzle-plugin-postcss) [![npm version](https://badge.fury.io/js/razzle-plugin-postcss.svg)](https://badge.fury.io/js/razzle) [![Known Vulnerabilities](https://snyk.io/test/npm/razzle-plugin-postcss/badge.svg)](https://snyk.io/test/npm/razzle-plugin-postcss) [![Greenkeeper badge](https://badges.greenkeeper.io/rhodee/razzle-plugin-postcss.svg)](https://greenkeeper.io/)
+![Razzle-status](https://david-dm.org/rhodee/razzle-plugin-postcss.svg?path=packages/razzle-plugin-postcss) [![npm version](https://badge.fury.io/js/razzle-plugin-postcss.svg)](https://badge.fury.io/js/razzle) [![Known Vulnerabilities](https://snyk.io/test/npm/razzle-plugin-postcss/badge.svg)](https://snyk.io/test/npm/razzle-plugin-postcss)
 
-A [Razzle](https://github.com/jaredpalmer/razzle) 2.x [plugin](https://github.com/jaredpalmer/razzle/tree/master/packages) for PostCSS (with support for SCSS syntax).
+A [Razzle](https://github.com/jaredpalmer/razzle) 2.x [plugin](https://github.com/jaredpalmer/razzle/tree/master/packages) for PostCSS (with primer for supporting for SCSS syntax).
+
+Instead of locking your postCSS config to the core project [postCSS configurations](https://github.com/jaredpalmer/razzle/blob/master/packages/razzle/config/createConfig.js#L20), this gives you the freedom to shoot yourself in the foot. Or style your Razzle project, whichever.
 
 ## Usage
 
@@ -26,9 +28,7 @@ Example options for each plugin can be found inside of [testdata]('testdata'). O
         'not ie < 9' // React doesn't support IE8 anyway
       ]
     })
-  ],
-  filename: '[name].css',
-  chunkFilename: '[contenthash:8].css'
+  ]
 }
   const modify = modifyBuilder({ cssConfig })
 
@@ -36,6 +36,8 @@ Example options for each plugin can be found inside of [testdata]('testdata'). O
     plugins: [ { func: modify }]
   }
 ```
+
+Note: Your *package.json* must import `postcss-scss` for this to work, the plugin simply enables the syntax at compile time.
 
 ### Configuration options
 

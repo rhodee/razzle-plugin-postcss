@@ -1,9 +1,7 @@
 /*tslint:disable:no-implicit-dependencies*/
-import { IStyleConfig } from '../index'
+import { IStyleConfig } from '../index';
 
 export const cssConfig: IStyleConfig = {
-  cssChunkFilename: '[contenthash:8].css',
-  cssFilename: '[name].css',
   postcssPlugins: [
     require('stylelint')({
       ignorePath: '/node_modules/**/*.css'
@@ -17,4 +15,4 @@ export const cssConfig: IStyleConfig = {
       ]
     })
   ]
-}
+};
